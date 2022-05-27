@@ -6,26 +6,6 @@
 5. Run app.
 
 
-### main.dart
-The "entry point" of program.
-In general, `main.dart` contain **AppMaterial**, but this repo use **GetMaterialApp** which has the default MaterialApp as a child.
-### assets
-This folder is to store static assets like fonts and images.
-### common
-### configs
-This folder hold the config of your applications.
-### database
-### l10n
-This folder contain all localized string. [See more](https://flutter.dev/docs/development/accessibility-and-localization/internationalization)
-### models
-### networks
-### router
-This folder contain the route navigation
-### services
-This folder contain all GetxService or any service which can not be removed from memory.
-### ui
-### utils
-
 ## How to use
 ### Creating a screen.
 All screen should be created in the `ui/pages` folder
@@ -77,5 +57,4 @@ Ex:
 logger.d("message"); //"💙 DEBUG: message"
 logger.i("message"); //"💚 INFO: message"
 logger.e("message"); //"❤️ ERROR: message"
-logger.log("very very very long message");
 ```
