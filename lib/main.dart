@@ -1,79 +1,103 @@
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_app/generated/l10n.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
-import 'bindings/initial_binding.dart';
-import 'common/app_themes.dart';
-import 'router/route_config.dart';
-import 'services/setting_service.dart';
-import 'ui/pages/splash/splash_view.dart';
+import 'package:getx_structure/api_service/dio_client.dart';
+import 'package:getx_structure/common/constants/color_constants.dart';
+import 'package:getx_structure/common/constants/font_constants.dart';
+import 'package:getx_structure/pages/splash/splash_bindings.dart';
 
-void main() async {
+import 'notification_handler/my_notification_manager.dart';
+import 'routes/app_pages.dart';
+import 'utils/logger_util.dart';
+
+void main(main){
   WidgetsFlutterBinding.ensureInitialized();
-
-  /// AWAIT SERVICES INITIALIZATION.
-  await initServices();
-
-  runApp(MyApp());
+  initServices();
+  runApp(const MyApp());
+  configLoading();
 }
 
-/// Is a smart move to make your Services intiialize before you run the Flutter app.
-/// as you can control the execution flow (maybe you need to load some Theme configuration,
-/// apiKey, language defined by the User... so load SettingService before running ApiService.
-/// so GetMaterialApp() doesnt have to rebuild, and takes the values directly.
-Future initServices() async {
-  /// Here is where you put get_storage, hive, shared_pref initialization.
-  /// or moor connection, or whatever that's async.
-  await Get.putAsync(() => SettingService().init());
+initServices() async {
+  /*FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+  await Firebase.initializeApp();
+  MyNotificationManager().init();*/
+  await Get.putAsync<DioClient>(() => DioClient().init());
+}
+
+Future<void> _firebaseMessagingBackgroundHandler(
+    RemoteMessage message) async {
+  // If you're going to use other Firebase services in the background, such as Firestore,
+  // make sure you call `initializeApp` before using other Firebase services.
+  await Firebase.initializeApp();
+  logger.log('Handling a background message ${message.messageId}');
+  // handleNotification(message);
 }
 
 class MyApp extends StatefulWidget {
+  const MyApp({Key? key}) : super(key: key);
+
   @override
-  State<StatefulWidget> createState() {
-    return _MyAppState();
-  }
+  MyAppState createState() => MyAppState();
 }
 
-class _MyAppState extends State<MyApp> {
-  @override
-  void initState() {
-    super.initState();
-  }
+class MyAppState extends State<MyApp> {
 
-  @override
-  void dispose() {
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: hideKeyboard,
-      child: GetMaterialApp(
-        debugShowCheckedModeBanner: false,
-        home: SplashPage(),
-        theme: AppThemes.lightTheme,
-        darkTheme: AppThemes.darkTheme,
-        themeMode: ThemeMode.system,
-        initialBinding: InitialBinding(),
-        initialRoute: RouteConfig.splash,
-        getPages: RouteConfig.getPages,
-        localizationsDelegates: [
-          GlobalMaterialLocalizations.delegate,
-          GlobalWidgetsLocalizations.delegate,
-          GlobalCupertinoLocalizations.delegate,
-          S.delegate,
-        ],
-        locale: Get.find<SettingService>().currentLocate.value,
-        supportedLocales: S.delegate.supportedLocales,
+
+    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent,
+      // systemOverlayStyle: SystemUiOverlayStyle.dark,
+      statusBarIconBrightness: Brightness.dark,
+      systemNavigationBarColor: ColorConstants.blackColor,
+      systemNavigationBarDividerColor: ColorConstants.greyBackground,
+      systemNavigationBarIconBrightness: Brightness.dark,
+    ));
+    return  GetMaterialApp(
+
+
+
+      theme: ThemeData(
+        textTheme: const TextTheme(
+            subtitle1: TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeightConstants.regular,
+            )
+
+        ),
+        primaryColor: ColorConstants.selectedLightGreen,
+        colorScheme: const ColorScheme.highContrastLight(
+            primary: ColorConstants.selectedLightGreen
+        ),
+        canvasColor: Colors.white,
+        scaffoldBackgroundColor: Colors.white,
+        focusColor: ColorConstants.whiteColor,
       ),
+      debugShowCheckedModeBanner: false,
+      builder: EasyLoading.init(),
+      initialBinding: SplashBindings(),
+      initialRoute: AppPages.initialRoute,
+      getPages: AppPages.routes,
     );
   }
+}
 
-  void hideKeyboard() {
-    FocusScopeNode currentFocus = FocusScope.of(context);
-    if (!currentFocus.hasPrimaryFocus && currentFocus.focusedChild != null) {
-      FocusManager.instance.primaryFocus?.unfocus();
-    }
-  }
+void configLoading() {
+  EasyLoading.instance
+    ..displayDuration = const Duration(milliseconds: 3000)
+    ..indicatorType = EasyLoadingIndicatorType.circle
+    ..loadingStyle = EasyLoadingStyle.custom
+    ..indicatorSize = 45.0
+    ..radius = 10.0
+    ..progressColor = ColorConstants.whiteColor
+    ..backgroundColor = ColorConstants.selectedLightGreen
+    ..indicatorColor = ColorConstants.whiteColor
+    ..textColor = ColorConstants.whiteColor
+    ..maskColor = Colors.deepOrange.withOpacity(0.5)
+    ..userInteractions = false
+    ..dismissOnTap = true;
 }
