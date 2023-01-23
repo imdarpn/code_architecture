@@ -1,19 +1,38 @@
 part of 'login_bloc.dart';
 
-@freezed
-class LoginState with _$LoginState {
-  const factory LoginState({
-    @Default('')String emailAddress,
-    @Default('')String password,
-    @Default(false) bool isSubmitting,
-    @Default(false) bool showErrorMessage,
-    @Default(true) bool obscurePassword,
-    Either<bool, Unit>? authFailureOrSuccess,
-    // Unit comes from Dartz package and is equivalent to void.
-  }) = _LoginState;
 
-  factory LoginState.initial() => const LoginState(
-    emailAddress: '',
-    password: ''
-  );
+class LoginState extends Equatable {
+  const LoginState({
+    this.message = '',
+    this.status = LoadStatus.initial,
+    this.email = '',
+    this.password = '',
+  });
+
+  final String message;
+  final LoadStatus status;
+  final String email;
+  final String password;
+
+  LoginState copyWith({
+    String? email,
+    String? password,
+    LoadStatus? status,
+    String? message,
+  }) {
+    return LoginState(
+      email: email ?? this.email,
+      password: password ?? this.password,
+      status: status ?? this.status,
+      message: message ?? this.message,
+    );
+  }
+
+  @override
+  List<Object?> get props => [
+    message,
+    status,
+    email,
+    password,
+  ];
 }

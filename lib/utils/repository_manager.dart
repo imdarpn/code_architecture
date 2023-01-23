@@ -7,8 +7,8 @@ import 'package:getx_structure/repository/auth_repository.dart';
 final getIt = GetIt.instance;
 
 void setup() async {
+  getIt.registerLazySingletonAsync<DioClient>(() => DioClient().init());
 
-  //getIt.registerFactoryParam((param1, param2) => null)<DioClient>(() => DioClient().init());
-  getIt.registerLazySingleton<AuthRepository>(
-          () => AuthRepositoryImpl());
+  getIt.registerLazySingleton<AuthRepository>(() => AuthRepositoryImpl());
+  
 }

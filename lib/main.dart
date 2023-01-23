@@ -16,7 +16,7 @@ void main(main) {
   WidgetsFlutterBinding.ensureInitialized();
   initServices();
   runApp(const MyApp());
-  //configLoading();
+  configLoading();
 }
 
 initServices() async {
@@ -57,6 +57,7 @@ class MyAppState extends State<MyApp> {
           primarySwatch: Colors.blue,
         ),
         home: LoginView(),
+        builder: EasyLoading.init(),
       ),
     );
   }

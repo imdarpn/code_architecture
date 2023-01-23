@@ -1,16 +1,30 @@
 part of 'login_bloc.dart';
 
-@freezed
-class LoginEvent with _$LoginEvent {
-  const factory LoginEvent.started() = _Started;
+@immutable
+abstract class LoginEvent extends Equatable {
+  const LoginEvent();
+  @override
+  List<Object?> get props => [];
+}
 
-  const factory LoginEvent.emailChanged(String emailString) = _EmailChanged;
 
-  const factory LoginEvent.passwordChanged(String passwordString) =
-  _PasswordChanged;
+class LoginButtonPressedEvent extends LoginEvent {
+  const LoginButtonPressedEvent();
+}
 
-  const factory LoginEvent.obscurePasswordToggled() =
-  _ObscurePasswordToggled;
+class LoginEmailChangedEvent extends LoginEvent {
+  const LoginEmailChangedEvent({required this.email});
 
-  const factory LoginEvent.loginSubmitted() = _LoginSubmitted;
+  final String email;
+
+  @override
+  List<Object> get props => [email];
+}
+class LoginPasswordChangedEvent extends LoginEvent {
+  const LoginPasswordChangedEvent({required this.password});
+
+  final String password;
+
+  @override
+  List<Object> get props => [password];
 }

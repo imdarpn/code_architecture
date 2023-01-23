@@ -8,10 +8,11 @@ import 'package:getx_structure/common/widgets/common_widgets.dart';
 
 
 class DioClient extends Service {
-  late Dio _dio;
+  late Dio dio;
+  late DioClient dioClient;
 
   Future<DioClient> init() async {
-    _dio = Dio(BaseOptions(baseUrl: ApiConstant.baseUrl))..interceptors.add(ApiInterceptors());
+    dio = Dio(BaseOptions(baseUrl: ApiConstant.baseUrl))..interceptors.add(ApiInterceptors());
     return this;
   }
 
@@ -21,13 +22,13 @@ class DioClient extends Service {
       Response response;
       if (await CommonWidgets.checkConnectivity()) {
         if (method == MethodType.post) {
-          response = await _dio.post(url, data: params);
+          response = await dio.post(url, data: params);
         } else if (method == MethodType.delete) {
-          response = await _dio.delete(url);
+          response = await dio.delete(url);
         } else if (method == MethodType.patch) {
-          response = await _dio.patch(url);
+          response = await dio.patch(url);
         } else {
-          response = await _dio.get(
+          response = await dio.get(
             url,
             queryParameters: params,
           );
