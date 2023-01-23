@@ -1,39 +1,32 @@
-import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:get/get.dart';
 import 'package:getx_structure/api_service/dio_client.dart';
 import 'package:getx_structure/common/constants/color_constants.dart';
 import 'package:getx_structure/common/constants/font_constants.dart';
-import 'package:getx_structure/pages/splash/splash_bindings.dart';
+import 'package:getx_structure/pages/login_bloc/login_bloc.dart';
+import 'package:getx_structure/pages/login_bloc/login_screen.dart';
+import 'package:getx_structure/repository/auth_repository.dart';
 
-import 'notification_handler/my_notification_manager.dart';
-import 'routes/app_pages.dart';
 import 'utils/logger_util.dart';
+import 'utils/repository_manager.dart';
 
-void main(main){
+void main(main) {
   WidgetsFlutterBinding.ensureInitialized();
   initServices();
   runApp(const MyApp());
-  configLoading();
+  //configLoading();
 }
 
 initServices() async {
   /*FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   await Firebase.initializeApp();
   MyNotificationManager().init();*/
-  await Get.putAsync<DioClient>(() => DioClient().init());
-}
+  //await Get.putAsync<DioClient>(() => DioClient().init());
+  //Get.lazyPut<AuthRepository>(() => AuthRepositoryImpl());
 
-Future<void> _firebaseMessagingBackgroundHandler(
-    RemoteMessage message) async {
-  // If you're going to use other Firebase services in the background, such as Firestore,
-  // make sure you call `initializeApp` before using other Firebase services.
-  await Firebase.initializeApp();
-  logger.log('Handling a background message ${message.messageId}');
-  // handleNotification(message);
+  setup();
 }
 
 class MyApp extends StatefulWidget {
@@ -48,7 +41,6 @@ class MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-
     SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
       statusBarColor: Colors.transparent,
       // systemOverlayStyle: SystemUiOverlayStyle.dark,
@@ -57,31 +49,15 @@ class MyAppState extends State<MyApp> {
       systemNavigationBarDividerColor: ColorConstants.greyBackground,
       systemNavigationBarIconBrightness: Brightness.dark,
     ));
-    return  GetMaterialApp(
-
-
-
-      theme: ThemeData(
-        textTheme: const TextTheme(
-            subtitle1: TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeightConstants.regular,
-            )
-
+    return BlocProvider(
+      create: (context) => LoginBloc(),
+      child: MaterialApp(
+        title: 'Flutter Demo',
+        theme: ThemeData(
+          primarySwatch: Colors.blue,
         ),
-        primaryColor: ColorConstants.selectedLightGreen,
-        colorScheme: const ColorScheme.highContrastLight(
-            primary: ColorConstants.selectedLightGreen
-        ),
-        canvasColor: Colors.white,
-        scaffoldBackgroundColor: Colors.white,
-        focusColor: ColorConstants.whiteColor,
+        home: LoginView(),
       ),
-      debugShowCheckedModeBanner: false,
-      builder: EasyLoading.init(),
-      initialBinding: SplashBindings(),
-      initialRoute: AppPages.initialRoute,
-      getPages: AppPages.routes,
     );
   }
 }

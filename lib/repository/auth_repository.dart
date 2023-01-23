@@ -1,10 +1,11 @@
 import 'dart:convert';
 
-import 'package:get/get.dart';
+import 'package:get_it/get_it.dart';
 import 'package:getx_structure/api_service/api_constant.dart';
 import 'package:getx_structure/api_service/dio_client.dart';
 import 'package:getx_structure/common/enums/method_type.dart';
 import 'package:getx_structure/models/common_response.dart';
+import 'package:getx_structure/utils/logger_util.dart';
 
 
 abstract class AuthRepository  {
@@ -16,7 +17,7 @@ class AuthRepositoryImpl extends AuthRepository {
   late DioClient _dioClient;
 
   AuthRepositoryImpl() {
-    _dioClient = Get.find();
+    _dioClient = GetIt.instance.get<DioClient>();
   }
 
   @override
@@ -34,6 +35,7 @@ class AuthRepositoryImpl extends AuthRepository {
 
       return CommonResponse.fromJson(response, (json) => response);
     } catch (e) {
+      logger.e(e.toString());
       rethrow;
     }
   }

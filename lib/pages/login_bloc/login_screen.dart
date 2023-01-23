@@ -1,79 +1,82 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:get/get.dart';
 import 'package:getx_structure/common/constants/font_constants.dart';
 import 'package:getx_structure/common/constants/string_constants.dart';
 import 'package:getx_structure/common/widgets/common_widgets.dart';
-import 'package:getx_structure/pages/login/login_state.dart';
+import 'package:getx_structure/pages/login_bloc/login_bloc.dart';
 
 import '../../common/constants/color_constants.dart';
 import '../../common/constants/image_constants.dart';
-import 'login_controller.dart';
 
-class LoginView extends GetView<LoginController> {
+class LoginView extends StatelessWidget {
   LoginView({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return  Scaffold(
-      body: Column(
+      body: BlocListener<LoginBloc , LoginState>(
+            listener: (context, state) {
+              // TODO: implement listener
+            },
+  child: Column(
         children: [
           _logoContainer(),
           Expanded(
-              child: _loginForm()
+              child: _loginForm(context)
           ),
           Visibility(
               visible: MediaQuery.of(context).viewInsets.bottom==0,
               child: bottomText()),
         ],
       ),
+),
     );
   }
 
-  Widget _loginForm(){
-    return Form(
-      key: controller.loginState.loginFormKey!,
-      child: Padding(
-        padding: const EdgeInsets.only(top:35,left: 35,right: 35),
-        child: SingleChildScrollView(
-          child: Column(
-            children:  [
-              ///sign in
-              CommonWidgets.commonText(
-                  text: StringConstants.signIn,
-                  fontFamily: FontFamilyConstants.barlow,
-                  fontWeight: FontWeightConstants.semi_bold,
-                  fontSize: 20
-              ),
-              const SizedBox(height: 30,),
-              /// email
-              _enterEmail(),
-              const SizedBox(height: 20,),
-              /// password
-              _enterPassword(),
-              const SizedBox(height: 20,),
-              ///forgot password
-              CommonWidgets.commonText(
+  Widget _loginForm(BuildContext context){
+    return Padding(
+      padding: const EdgeInsets.only(top:35,left: 35,right: 35),
+      child: SingleChildScrollView(
+        child: Column(
+          children:  [
+            ///sign in
+            CommonWidgets.commonText(
+                text: StringConstants.signIn,
+                fontFamily: FontFamilyConstants.barlow,
+                fontWeight: FontWeightConstants.semi_bold,
+                fontSize: 20
+            ),
+            const SizedBox(height: 30,),
+            /// email
+            _enterEmail(),
+            const SizedBox(height: 20,),
+            /// password
+            _enterPassword(),
+            const SizedBox(height: 20,),
+            ///forgot password
+            CommonWidgets.commonText(
 
-                  text: StringConstants.forgetPassword,
-                  fontWeight: FontWeightConstants.medium,
-                  fontSize: 14
-              ),
-              const SizedBox(height: 20,),
-              ///sign in button
-              CommonWidgets.commonFilledButton(
-                  context: Get.context,
-                  onclick: (){
-                   controller.doSignIn();
-                  },
-                  color: ColorConstants.selectedLightGreen,
-                  fontWeight: FontWeightConstants.semi_bold,
-                  fontSize: 17,
-                  title: StringConstants.signIn,
-                  textColor: ColorConstants.whiteColor
-              ),
-            ],
-          ),
+                text: StringConstants.forgetPassword,
+                fontWeight: FontWeightConstants.medium,
+                fontSize: 14
+            ),
+            const SizedBox(height: 20,),
+            ///sign in button
+            CommonWidgets.commonFilledButton(
+                context: context,
+                onclick: (){
+                  context.read<LoginBloc>().add(
+                    const LoginEvent.loginSubmitted(),
+                  );
+                },
+                color: ColorConstants.selectedLightGreen,
+                fontWeight: FontWeightConstants.semi_bold,
+                fontSize: 17,
+                title: StringConstants.signIn,
+                textColor: ColorConstants.whiteColor
+            ),
+          ],
         ),
       ),
     );
@@ -92,31 +95,45 @@ class LoginView extends GetView<LoginController> {
   }
 
   Widget _enterEmail(){
+    return BlocBuilder<LoginBloc, LoginState>(
+  builder: (context, state) {
     return CommonWidgets.commonTextFormField(
       labelText: StringConstants.email,
       obscureText: false,
       autofocus: false,
       fontWeight: FontWeightConstants.medium,
       textColor: ColorConstants.blackColor,
-      textEditingController: controller.loginState.emailController,
+      //textEditingController: controller.loginState.emailController,
+      onChanged: (value) => context
+          .read<LoginBloc>()
+          .add(LoginEvent.emailChanged(value)),
       fontFamily: FontFamilyConstants.barlow,
       suffixIcon: SvgPicture.asset(ImageConstants.signIn),
 
+
     );
+  },
+);
   }
 
   Widget _enterPassword(){
+    return BlocBuilder<LoginBloc, LoginState>(
+  builder: (context, state) {
     return CommonWidgets.commonTextFormField(
       labelText: StringConstants.password,
       obscureText: true,
       autofocus: false,
       fontWeight: FontWeightConstants.medium,
       textColor: ColorConstants.blackColor,
-      textEditingController: controller.loginState.passwordController,
+      onChanged: (value) => context
+          .read<LoginBloc>()
+          .add(LoginEvent.passwordChanged(value)),
       fontFamily: FontFamilyConstants.barlow,
       suffixIcon: SvgPicture.asset(ImageConstants.forgetPassword),
 
     );
+  },
+);
   }
 
   Widget bottomText(){

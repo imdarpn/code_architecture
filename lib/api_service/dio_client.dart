@@ -1,12 +1,13 @@
+import 'dart:developer';
+
 import 'package:dio/dio.dart';
-import 'package:get/get_state_manager/src/rx_flutter/rx_disposable.dart';
 import 'package:getx_structure/api_service/api_constant.dart';
 import 'package:getx_structure/api_service/api_interceptor.dart';
 import 'package:getx_structure/common/enums/method_type.dart';
 import 'package:getx_structure/common/widgets/common_widgets.dart';
 
 
-class DioClient extends GetxService {
+class DioClient extends Service {
   late Dio _dio;
 
   Future<DioClient> init() async {

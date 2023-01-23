@@ -1,6 +1,5 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:getx_structure/common/constants/color_constants.dart';
 import 'package:getx_structure/common/constants/string_constants.dart';
 import 'package:getx_structure/common/widgets/custom_button.dart';
@@ -9,35 +8,6 @@ import '../constants/font_constants.dart';
 
 class CommonWidgets{
 
-  handleErrorDialog(String msg, BuildContext context) {
-    return Get.defaultDialog(
-      title: "",
-      contentPadding: const EdgeInsets.only(left: 16, right: 16, bottom: 16),
-      middleText: msg,
-      // textConfirm: StringAssets.okay,
-      onConfirm: () {
-        if (Get.overlayContext != null) {
-          Navigator.of(Get.overlayContext!).pop();
-        }
-      },
-      confirm: CustomButton.fillButton(
-          width: 60,
-          height: 36,
-          context: context,
-          function: () {
-            Navigator.of(Get.overlayContext!).pop();
-          },
-          text: StringConstants.okay,
-          fontSize: FontConstants.font_18,
-          backGroundColor: ColorConstants.selectedLightGreen),
-      radius: 10,
-      middleTextStyle: const TextStyle(
-          color: ColorConstants.blackColor,
-          fontSize: FontConstants.font_14,
-          fontWeight: FontWeightConstants.regular),
-      // confirmTextColor: ColorConstant.submit_button
-    );
-  }
 
   hideKeyboard(BuildContext context) {
     FocusScope.of(context).requestFocus(FocusNode());
@@ -46,33 +16,13 @@ class CommonWidgets{
   static Future<bool> checkConnectivity() async {
     var connectivityResult = await (Connectivity().checkConnectivity());
     if (connectivityResult == ConnectivityResult.none) {
-      showSnackBar(StringConstants.msgCheckConnection);
+      //showSnackBar(StringConstants.msgCheckConnection);
       return false;
     } else {
       return true;
     }
   }
 
-  static showSnackBar(String message, {Color? bgColor}) {
-    Get.snackbar(
-      '',
-      '',
-      snackPosition: SnackPosition.TOP,
-      snackStyle: SnackStyle.FLOATING,
-      messageText: Text(message),
-      titleText: Container(),
-      backgroundColor: bgColor ?? Colors.white,
-      colorText: Theme.of(Get.context!).colorScheme.surface,
-      isDismissible: false,
-      animationDuration: const Duration(milliseconds: 500),
-      duration: const Duration(seconds: 2),
-      margin:  EdgeInsets.all(10.0),
-      /*mainButton: TextButton(
-      child: Text('Undo'),
-      onPressed: () {},
-    ),*/
-    );
-  }
 
   static Widget commonText(
       {
@@ -179,7 +129,7 @@ class CommonWidgets{
         String? validationRegex,
         int? value,
         int? length,
-        String? lengthMessage,
+        String? lengthMessage, Function? validator,
 
       }) {
     return/* Padding(
@@ -260,6 +210,7 @@ class CommonWidgets{
       onChanged: (value) {
         onChanged?.call(value);
       },
+
       onTap: () {
         onTap?.call();
       },
