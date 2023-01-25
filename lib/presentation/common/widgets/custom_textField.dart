@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:getx_structure/common/constants/color_constants.dart';
-import 'package:getx_structure/common/constants/font_constants.dart';
+
+import '../constants/color_constants.dart';
+import '../constants/font_constants.dart';
 
 class CustomTextFields {
   //Text

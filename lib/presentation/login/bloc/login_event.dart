@@ -28,3 +28,16 @@ class LoginPasswordChangedEvent extends LoginEvent {
   @override
   List<Object> get props => [password];
 }
+
+class LoginEventDoLogin implements LoginEvent {
+  final LoginRequest loginRequest;
+
+  LoginEventDoLogin({required this.loginRequest});
+
+  @override
+  List<Object?> get props => [loginRequest];
+
+  @override
+  bool? get stringify => false;
+
+}

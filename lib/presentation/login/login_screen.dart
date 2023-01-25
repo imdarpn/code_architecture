@@ -1,24 +1,33 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:getx_structure/common/constants/font_constants.dart';
-import 'package:getx_structure/common/constants/string_constants.dart';
-import 'package:getx_structure/common/widgets/common_widgets.dart';
-import 'package:getx_structure/pages/login_bloc/login_bloc.dart';
+import '../common/constants/color_constants.dart';
+import '../common/constants/font_constants.dart';
+import '../common/constants/image_constants.dart';
+import '../common/constants/string_constants.dart';
+import '../common/enums/loading_status.dart';
+import '../common/widgets/common_widgets.dart';
+import 'bloc/login_bloc.dart';
+import 'bloc/login_state.dart';
 
-import '../../common/constants/color_constants.dart';
-import '../../common/constants/image_constants.dart';
-import '../../common/enums/loading_status.dart';
 
 class LoginView extends StatelessWidget {
-  LoginView({Key? key}) : super(key: key);
+  final LoginBloc? loginBloc;
+  LoginView({Key? key,this.loginBloc}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: BlocListener<LoginBloc, LoginState>(
+      body: BlocConsumer<LoginBloc, LoginState>(
+        bloc: loginBloc,
         listener: (context, state) {
-          if (state.status == LoadStatus.success) {
+          // TODO: implement listener
+        },
+  builder: (context, state) {
+    return BlocListener<LoginBloc, LoginState>(
+      bloc: loginBloc,
+        listener: (context, state) {
+         /* if (state.status == LoadStatus.success) {
             SnackBar(
               content: Text(state.message),
             );
@@ -29,7 +38,7 @@ class LoginView extends StatelessWidget {
                 content: Text(state.message),
               ),
             );
-          }
+          }*/
         },
         child: Column(
           children: [
@@ -40,7 +49,9 @@ class LoginView extends StatelessWidget {
                 child: bottomText()),
           ],
         ),
-      ),
+      );
+  },
+),
     );
   }
 

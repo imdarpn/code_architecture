@@ -3,12 +3,8 @@ import 'dart:io' show Platform;
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:getx_structure/api_service/api_constant.dart';
+import 'package:getx_structure/data/common/constants/api_constant.dart';
 import 'package:getx_structure/utils/logger_util.dart';
-
-
-import '../common/widgets/common_widgets.dart';
-
 
 class ApiInterceptors extends InterceptorsWrapper {
 

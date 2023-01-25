@@ -1,10 +1,8 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
-import 'package:getx_structure/common/constants/color_constants.dart';
-import 'package:getx_structure/common/constants/string_constants.dart';
-import 'package:getx_structure/common/widgets/custom_button.dart';
-
+import '../constants/color_constants.dart';
 import '../constants/font_constants.dart';
+
 
 class CommonWidgets{
 

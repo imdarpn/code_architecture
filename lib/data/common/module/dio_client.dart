@@ -2,10 +2,13 @@ import 'dart:developer';
 
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
-import 'package:getx_structure/api_service/api_constant.dart';
-import 'package:getx_structure/api_service/api_interceptor.dart';
-import 'package:getx_structure/common/enums/method_type.dart';
-import 'package:getx_structure/common/widgets/common_widgets.dart';
+import 'package:getx_structure/data/common/constants/api_constant.dart';
+
+import '../../../domain/common/base/base_exception.dart';
+import '../../../models/common_response.dart';
+import '../../../presentation/common/enums/method_type.dart';
+import '../../../presentation/common/widgets/common_widgets.dart';
+import '../interceptor/api_interceptor.dart';
 
 
 class DioClient extends Service {
@@ -16,10 +19,11 @@ class DioClient extends Service {
     return this;
   }
 
-  Future<Either<Map<String, dynamic>, Map<String, dynamic>>> request(String url, MethodType method, dynamic params) async {
+  Future<CommonResponse> request(String url, MethodType method, dynamic params) async {
+    Response? response;
     try {
 
-      Response response;
+
       if (await CommonWidgets.checkConnectivity()) {
         if (method == MethodType.post) {
           response = await dio.post(url, data: params);
@@ -34,23 +38,16 @@ class DioClient extends Service {
           );
         }
 
-        return right(response.data);
+        return CommonResponse.fromJson(response.data, (json) => response!.data);
       } else {
-        return left({
-          "message":"No Internet connection",
-          "status" : false
-        });
+        throw BaseException(message: "No Internet connection", code: response!.statusCode);
+
       }
     } on DioError catch (dioError) {
-      return left({
-        "message":dioError.response?.data["message"],
-        "status" : false
-      });
+
+      throw BaseException(message: dioError.message, code: dioError.response?.statusCode);
     } catch (error) {
-      return left({
-        "message":error.toString(),
-        "status" : false
-      });
+      throw BaseException(message: error.toString());
     }
   }
 }
