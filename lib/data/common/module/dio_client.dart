@@ -5,10 +5,10 @@ import 'package:dio/dio.dart';
 import 'package:getx_structure/data/common/constants/api_constant.dart';
 
 import '../../../domain/common/base/base_exception.dart';
-import '../../../models/common_response.dart';
 import '../../../presentation/common/enums/method_type.dart';
 import '../../../presentation/common/widgets/common_widgets.dart';
 import '../interceptor/api_interceptor.dart';
+import '../resposne_model/common_response.dart';
 
 
 class DioClient extends Service {

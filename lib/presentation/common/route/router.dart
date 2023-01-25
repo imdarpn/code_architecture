@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:getx_structure/presentation/login/bloc/login_state.dart';
-
 import '../../../main.dart';
-import '../../login/bloc/login_page.dart';
 import '../../login/login_screen.dart';
 import '../../splash/splash.page.dart';
 
