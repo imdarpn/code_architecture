@@ -11,25 +11,23 @@ abstract class AuthRepository  {
 }
 
 class AuthRepositoryImpl extends AuthRepository {
-
-  AuthRepositoryImpl()  {
-    //dioClient = GetIt.instance.get();
-  }
+  final DioClient dioClient;
+  AuthRepositoryImpl({required this.dioClient});
 
   @override
   Future<CommonResponse> doLogin({
   String emailId = "",
   String password = ""}) async {
-    DioClient dioClient  = await DioClient().init();
+   // DioClient dioClient  = await DioClient().init();
     try {
       var jsonBody = {
         "email": emailId,
-        "password": password,
+         "password": password,
       };
       var response = await dioClient.request(
           ApiConstant.login, MethodType.post, jsonBody);
 
-      return CommonResponse.fromJson(response, (json) => response);
+      return CommonResponse.fromJson(response.fold((l) => l, (r) => r), (json) => response);
     } catch (e) {
       logger.e(e.toString());
       rethrow;

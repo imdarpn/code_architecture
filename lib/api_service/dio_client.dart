@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 import 'package:getx_structure/api_service/api_constant.dart';
 import 'package:getx_structure/api_service/api_interceptor.dart';
@@ -9,14 +10,13 @@ import 'package:getx_structure/common/widgets/common_widgets.dart';
 
 class DioClient extends Service {
   late Dio dio;
-  late DioClient dioClient;
 
-  Future<DioClient> init() async {
+  DioClient init() {
     dio = Dio(BaseOptions(baseUrl: ApiConstant.baseUrl))..interceptors.add(ApiInterceptors());
     return this;
   }
 
-  Future<Map<String, dynamic>> request(String url, MethodType method, dynamic params) async {
+  Future<Either<Map<String, dynamic>, Map<String, dynamic>>> request(String url, MethodType method, dynamic params) async {
     try {
 
       Response response;
@@ -34,23 +34,23 @@ class DioClient extends Service {
           );
         }
 
-        return response.data;
+        return right(response.data);
       } else {
-        return {
+        return left({
           "message":"No Internet connection",
           "status" : false
-        };
+        });
       }
     } on DioError catch (dioError) {
-      return {
+      return left({
         "message":dioError.response?.data["message"],
         "status" : false
-      };
+      });
     } catch (error) {
-      return {
+      return left({
         "message":error.toString(),
         "status" : false
-      };
+      });
     }
   }
 }

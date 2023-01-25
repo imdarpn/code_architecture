@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:get_it/get_it.dart';
 import 'package:getx_structure/api_service/dio_client.dart';
 import 'package:getx_structure/common/constants/color_constants.dart';
 import 'package:getx_structure/common/constants/font_constants.dart';
@@ -11,6 +12,8 @@ import 'package:getx_structure/repository/auth_repository.dart';
 
 import 'utils/logger_util.dart';
 import 'utils/repository_manager.dart';
+
+final sl = GetIt.instance;
 
 void main(main) {
   WidgetsFlutterBinding.ensureInitialized();
@@ -37,8 +40,6 @@ class MyApp extends StatefulWidget {
 }
 
 class MyAppState extends State<MyApp> {
-
-
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
@@ -49,17 +50,27 @@ class MyAppState extends State<MyApp> {
       systemNavigationBarDividerColor: ColorConstants.greyBackground,
       systemNavigationBarIconBrightness: Brightness.dark,
     ));
-    return BlocProvider(
-      create: (context) => LoginBloc(),
-      child: MaterialApp(
-        title: 'Flutter Demo',
-        theme: ThemeData(
-          primarySwatch: Colors.blue,
-        ),
-        home: LoginView(),
-        builder: EasyLoading.init(),
-      ),
-    );
+    return FutureBuilder(
+        future: sl.allReady(),
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            return BlocProvider(
+              create: (context) => LoginBloc(),
+              child: MaterialApp(
+                title: 'Flutter Demo',
+                theme: ThemeData(
+                  primarySwatch: Colors.blue,
+                ),
+                home: LoginView(),
+                builder: EasyLoading.init(),
+              ),
+            );
+          } else {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+        });
   }
 }
 
